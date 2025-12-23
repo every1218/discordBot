@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "discordbot"
+version = "0.1.0"
+description = "A discord bot"
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10.5"
+discord-py = "*"
+flask = "*"
+python-dotenv = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
