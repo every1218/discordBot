@@ -1,8 +1,13 @@
 import os
 import csv
+from pathlib import Path
+
+# 현재 파일(user_data.py)을 기준으로 프로젝트 루트 경로와 데이터 파일 경로를 설정
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_FILE = BASE_DIR / "data" / "economy_data.csv"
 
 #유저데이터 불러오기
-def load_user_data(filename="economy_data.csv"):
+def load_user_data(filename=DATA_FILE):
     usernames, idA, moneyA, levelA, timeA, timeB, timeC = [], [], [], [], [], [], [] #A:시급, B:출석, C:분급
     if not os.path.exists(filename):
         with open(filename, "w", newline='', encoding='utf-8') as f:
@@ -24,7 +29,7 @@ def load_user_data(filename="economy_data.csv"):
     return usernames, idA, moneyA, levelA, timeA, timeB, timeC
 
 #유저데이터 저장
-def save_user_data(usernames, idA, moneyA, levelA, timeA, timeB, timeC, filename="economy_data.csv"):
+def save_user_data(usernames, idA, moneyA, levelA, timeA, timeB, timeC, filename=DATA_FILE):
     with open(filename, "w", newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(["username", "id", "money", "level", "hourly_time", "attendance_time", "minutely_time"])

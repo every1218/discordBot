@@ -6,20 +6,20 @@ import time
 async def handle_money(message, idA, moneyA, levelA):
     ID = str(message.author.id)
     if ID in idA:
-        embed = discord.Embed(title=message.author.name, description="자산 : "+format(moneyA[idA.index(ID)], ",d") + "원\n레벨 : "+format(levelA[idA.index(ID)]), color=0x118811)
+        embed = discord.Embed(title=message.author.display_name, description="자산 : "+format(moneyA[idA.index(ID)], ",d") + "원\n레벨 : "+format(levelA[idA.index(ID)]), color=0x118811)
         await message.channel.send(embed=embed)
     else:
-        embed = discord.Embed(title=message.author.name, description="자산 : 0원\n레벨 : 0", color=0x118811)
+        embed = discord.Embed(title=message.author.display_name, description="자산 : 0원\n레벨 : 0", color=0x118811)
         await message.channel.send(embed=embed)
 
 # 시급
 async def handle_hourly(message, usernames, idA, moneyA, timeA, levelA, timeB, timeC):
     ID = str(message.author.id)
     TIME = int(time.time())
-    random_money = random.randrange(1000000, 10000000)
+    random_money = random.randrange(10000, 100000)
     if ID in idA:
         if TIME - int(timeA[idA.index(ID)]) < 3600:
-            embed = discord.Embed(title=message.author.name, description=f"1시간마다 받을 수 있습니다.\n{int((3600 - (TIME - int(timeA[idA.index(ID)])))/60)}분", color=0xFF0000)
+            embed = discord.Embed(title=message.author.display_name, description=f"1시간마다 받을 수 있습니다.\n{int((3600 - (TIME - int(timeA[idA.index(ID)])))/60)}분", color=0xFF0000)
             await message.channel.send(embed=embed)
             return
         elif TIME - int(timeA[idA.index(ID)]) >= 3600:
@@ -29,24 +29,24 @@ async def handle_hourly(message, usernames, idA, moneyA, timeA, levelA, timeB, t
         moneyA[idA.index(ID)] += give
     else:
         give = random_money
-        usernames.append(message.author.name)
+        usernames.append(message.author.display_name)
         idA.append(ID)
         moneyA.append(give)
         levelA.append(0)
         timeA.append(int(time.time()))
         timeB.append(int(0))
         timeC.append(int(0))
-    embed = discord.Embed(title=message.author.name,description=f"**{format(give, ',d')}원** 받았습니다. `[자산: {format(moneyA[idA.index(ID)], ',d')}]`",color=0x00FF00)
+    embed = discord.Embed(title=message.author.display_name,description=f"**{format(give, ',d')}원** 받았습니다. `[자산: {format(moneyA[idA.index(ID)], ',d')}]`",color=0x00FF00)
     await message.channel.send(embed=embed)
 
 # 분급
 async def handle_minutely(message, usernames, idA, moneyA, timeA, levelA, timeB, timeC):
     ID = str(message.author.id)
     TIME = int(time.time())
-    random_money = random.randrange(1000000, 10000000)
+    random_money = random.randrange(1000, 10000)
     if ID in idA:
         if TIME - int(timeC[idA.index(ID)]) < 60:
-            embed = discord.Embed(title=message.author.name, description=f"1분마다 받을 수 있습니다.\n{60-(TIME - int(timeC[idA.index(ID)]))}초", color=0xFF0000)
+            embed = discord.Embed(title=message.author.display_name, description=f"1분마다 받을 수 있습니다.\n{60-(TIME - int(timeC[idA.index(ID)]))}초", color=0xFF0000)
             await message.channel.send(embed=embed)
             return
         elif TIME - int(timeC[idA.index(ID)]) >= 60:
@@ -56,14 +56,14 @@ async def handle_minutely(message, usernames, idA, moneyA, timeA, levelA, timeB,
         moneyA[idA.index(ID)] += give
     else:
         give = random_money
-        usernames.append(message.author.name)
+        usernames.append(message.author.display_name)
         idA.append(ID)
         moneyA.append(give)
         levelA.append(0)
         timeA.append(0)
         timeB.append(0)
         timeC.append(int(time.time()))
-    embed = discord.Embed(title=message.author.name,description=f"**{format(give, ',d')}원** 받았습니다. `[자산: {format(moneyA[idA.index(ID)], ',d')}]`",color=0x00FF00)
+    embed = discord.Embed(title=message.author.display_name,description=f"**{format(give, ',d')}원** 받았습니다. `[자산: {format(moneyA[idA.index(ID)], ',d')}]`",color=0x00FF00)
     await message.channel.send(embed=embed)
 
 # 출석
@@ -72,7 +72,7 @@ async def handle_attendance(message, usernames, idA, moneyA, timeA, levelA, time
     TIME = int(time.time())
     if ID in idA:
         if TIME - int(timeB[idA.index(ID)]) < 86400:
-            embed = discord.Embed(title=message.author.name, description=f"하루에 한번 출석할 수 있습니다.\n{int((86400 - (TIME - int(timeB[idA.index(ID)])))/3600)}시간", color=0xFF0000)
+            embed = discord.Embed(title=message.author.display_name, description=f"하루에 한번 출석할 수 있습니다.\n{int((86400 - (TIME - int(timeB[idA.index(ID)])))/3600)}시간", color=0xFF0000)
             await message.channel.send(embed=embed)
             return
         elif TIME - int(timeB[idA.index(ID)]) >= 86400:
@@ -80,14 +80,14 @@ async def handle_attendance(message, usernames, idA, moneyA, timeA, levelA, time
     if ID in idA:
         levelA[idA.index(ID)] += 1
     else:
-        usernames.append(message.author.name)
+        usernames.append(message.author.display_name)
         idA.append(ID)
         moneyA.append(0)
         levelA.append(1)
         timeA.append(0)
         timeB.append(int(time.time()))
         timeC.append(0)
-    embed = discord.Embed(title=message.author.name, description="레벨이 올랐습니다.", color=0x00FF00)
+    embed = discord.Embed(title=message.author.display_name, description="레벨이 올랐습니다.", color=0x00FF00)
     await message.channel.send(embed=embed)
 
 # 순위
@@ -137,13 +137,13 @@ async def handle_transfer(message, idA, moneyA):
     person = str(message.content.split(" ")[2])
     person = person.strip("<"">""@")
     if moneyA[idA.index(ID)] < int(money):
-        embed = discord.Embed(title=message.author.name, description="잔액이 부족합니다", color=0xFF0000)
+        embed = discord.Embed(title=message.author.display_name, description="잔액이 부족합니다", color=0xFF0000)
         await message.channel.send(embed=embed)
         return
     if person in idA:
         moneyA[idA.index(ID)] -= int(money)
         moneyA[idA.index(person)] += int(money)
-        embed = discord.Embed(title=message.author.name, description=f"**{format(int(money),',d')}원**을 송금했습니다ㅤ`[자산 : {format(moneyA[idA.index(ID)], ',d')}원]`", color=0x118811)
+        embed = discord.Embed(title=message.author.display_name, description=f"**{format(int(money),',d')}원**을 송금했습니다ㅤ`[자산 : {format(moneyA[idA.index(ID)], ',d')}원]`", color=0x118811)
         await message.channel.send(embed=embed)
     else:
         embed = discord.Embed(title="오류", description="송금을 실패했습니다", color=0xFF0000)

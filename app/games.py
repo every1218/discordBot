@@ -14,7 +14,7 @@ async def handle_even_odd(message, idA, moneyA):
         betting = int(message.content.split(" ")[2])
     except:
         embed = discord.Embed(title="🎲 홀짝 게임", 
-                            description="**명령어 형식:** `.홀짝 (홀/짝) (금액)`\n\n**예시:** `.홀짝 홀 1000000`", 
+                            description="**명령어 형식:** `.홀짝 (홀/짝) (금액)`\n\n**예시:** `.홀짝 홀 1000`", 
                             color=0x3498db)
         embed.set_footer(text="홀수: 1,3,5 | 짝수: 2,4,6")
         await message.channel.send(embed=embed)
@@ -25,7 +25,7 @@ async def handle_even_odd(message, idA, moneyA):
         embed = discord.Embed(title="❌ 입력 오류", 
                             description="**홀** 또는 **짝**만 입력해주세요!", 
                             color=0xFF0000)
-        embed.add_field(name="올바른 형식", value="`.홀짝 홀 1000000`\n`.홀짝 짝 500000`")
+        embed.add_field(name="올바른 형식", value="`.홀짝 홀 1000`\n`.홀짝 짝 5000`")
         await message.channel.send(embed=embed)
         return
     
@@ -39,7 +39,7 @@ async def handle_even_odd(message, idA, moneyA):
     
     # 게임 시작
     start_embed = discord.Embed(title="🎲 홀짝 게임 시작!", 
-                              description=f"**{message.author.name}**님이 **{expectation}**에 **{format(betting, ',d')}원** 베팅!\nㅤ", 
+                              description=f"**{message.author.display_name}**님이 **{expectation}**에 **{format(betting, ',d')}원** 베팅!\nㅤ", 
                               color=0x3498db)
     start_embed.add_field(name="🎯 예측", value=expectation, inline=True)
     start_embed.add_field(name="💰 베팅 금액", value=f"{format(betting, ',d')}원", inline=True)
@@ -67,33 +67,25 @@ async def handle_even_odd(message, idA, moneyA):
         win_embed = discord.Embed(title="🎉 홀짝 성공!", 
                                 description=f"**축하합니다!** {expectation}을 맞추셨습니다!\nㅤ", 
                                 color=0x00FF00)
-        win_embed.add_field(name="🎯 예측", value=expectation, inline=True)
-        win_embed.add_field(name="🎲 결과", value=f"{final_dice} ({result})", inline=True)
         win_embed.add_field(name="💰 획득", value=f"+{format(betting, ',d')}원", inline=True)
-        win_embed.add_field(name="💵 새로운 자산", value=f"{format(moneyA[idA.index(ID)], ',d')}원", inline=True)
-        win_embed.add_field(name="📈 수익률", value="+100%", inline=True)
-        win_embed.set_footer(text="🎊 행운이 계속되길 바랍니다!")
+        win_embed.add_field(name="💵 자산", value=f"{format(moneyA[idA.index(ID)], ',d')}원", inline=True)
         await animation_msg.edit(content=f"🎲 최종 결과: {final_dice}")
-        await message.channel.send(embed=win_embed)
+        await message.channel.send(embed=win_embed, reference=message)
     else:
         # 패배
         moneyA[idA.index(ID)] -= betting
         lose_embed = discord.Embed(title="💔 홀짝 실패", 
                                  description=f"**아쉽네요...**  {expectation}이 아닌 {result}이 나왔습니다.\nㅤ", 
                                  color=0xFF0000)
-        lose_embed.add_field(name="🎯 예측", value=f"{expectation} ", inline=True)
-        lose_embed.add_field(name="🎲 결과", value=f" {final_dice} ({result})", inline=True)
         lose_embed.add_field(name="💰 손실", value=f"-{format(betting, ',d')}원", inline=True)
-        lose_embed.add_field(name="💵 새로운 자산", value=f"{format(moneyA[idA.index(ID)], ',d')}원", inline=True)
-        lose_embed.add_field(name="📉 손실률", value="-100%", inline=True)
-        lose_embed.set_footer(text="💪 다음에는 꼭 성공하세요!")
+        lose_embed.add_field(name="💵 자산", value=f"{format(moneyA[idA.index(ID)], ',d')}원", inline=True)
         await animation_msg.edit(content=f"🎲 최종 결과: {final_dice}")
-        await message.channel.send(embed=lose_embed)
+        await message.channel.send(embed=lose_embed, reference=message)
 
 # 잭팟 게임
 async def handle_jackpot(message, idA, moneyA):
     ID = str(message.author.id)
-    betting = 1000000
+    betting = 10000
     jackpot= ['🦑','🐳','🦑','🦑','🐧','🦑','🐳','🦑','🦑','🐳']
     animal = ['','','']
     
@@ -102,7 +94,7 @@ async def handle_jackpot(message, idA, moneyA):
         embed = discord.Embed(title="💰 잔액 부족", 
                             description=f"**현재 자산:** {format(moneyA[idA.index(ID)] if ID in idA else 0, ',d')}원\n**필요 금액:** {format(betting, ',d')}원", 
                             color=0xFF0000)
-        embed.set_footer(text="잭팟 게임은 100만원이 필요합니다")
+        embed.set_footer(text="잭팟 게임은 1만원이 필요합니다")
         await message.channel.send(embed=embed)
         return
     
@@ -110,8 +102,8 @@ async def handle_jackpot(message, idA, moneyA):
     moneyA[idA.index(ID)] -= betting
     
     # 슬롯머신 애니메이션 (기존 텍스트 방식)
-    msg = await message.channel.send("🎰          🎰          🎰", reference=message)
-    await asyncio.sleep(0.5)
+    msg = await message.channel.send("❓          ❓          ❓", reference=message)
+    await asyncio.sleep(1)
 
     animal[0] = random.choice(jackpot)
     await msg.edit(content=f"{animal[0]}          ❓          ❓")
@@ -127,53 +119,42 @@ async def handle_jackpot(message, idA, moneyA):
     
     # 결과 판정
     if animal[0] == animal[1] == animal[2] == '🦑':
-        # 🦑 잭팟 (2.5배)
-        earned = 2500000
+        # 🦑 잭팟 (3배)
+        earned = 30000
         moneyA[idA.index(ID)] += earned
         win_embed = discord.Embed(title="🎉 🦑 잭팟 당첨!", 
                                 description=f"**축하합니다!** 🦑 잭팟을 맞추셨습니다!\nㅤ", 
                                 color=0x00FF00)
-        win_embed.add_field(name="🎰 결과", value=f"[{animal[0]}] [{animal[1]}] [{animal[2]}]", inline=True)
         win_embed.add_field(name="💰 획득", value=f"+{format(earned, ',d')}원", inline=True)
         win_embed.add_field(name="💵 자산", value=f"{format(moneyA[idA.index(ID)], ',d')}원", inline=True)
-        win_embed.add_field(name="📈 배율", value="2.5x", inline=True)
-        win_embed.set_footer(text="🎊 행운이 계속되길 바랍니다!")
         
     elif animal[0] == animal[1] == animal[2] == '🐳':
-        # 🐳 잭팟 (17배)
-        earned = 17000000
+        # 🐳 잭팟 (20배)
+        earned = 200000
         moneyA[idA.index(ID)] += earned
         win_embed = discord.Embed(title="🎉 🐳 잭팟 당첨!", 
                                 description=f"**대박!** 🐳 잭팟을 맞추셨습니다!\nㅤ", 
                                 color=0x00FF00)
-        win_embed.add_field(name="🎰 결과", value=f"[{animal[0]}] [{animal[1]}] [{animal[2]}]", inline=True)
         win_embed.add_field(name="💰 획득", value=f"+{format(earned, ',d')}원", inline=True)
         win_embed.add_field(name="💵 자산", value=f"{format(moneyA[idA.index(ID)], ',d')}원", inline=True)
-        win_embed.add_field(name="📈 배율", value="17x", inline=True)
-        win_embed.set_footer(text="🎊 엄청난 행운이네요!")
         
     elif animal[0] == animal[1] == animal[2] == '🐧':
         # 🐧 잭팟 (300배)
-        earned = 300000000
+        earned = 3000000
         moneyA[idA.index(ID)] += earned
         win_embed = discord.Embed(title="🎉 🐧 잭팟 당첨!", 
                                 description=f"**전설!** 🐧 잭팟을 맞추셨습니다!\nㅤ", 
                                 color=0xFFD700)
-        win_embed.add_field(name="🎰 결과", value=f"[{animal[0]}] [{animal[1]}] [{animal[2]}]", inline=True)
         win_embed.add_field(name="💰 획득", value=f"+{format(earned, ',d')}원", inline=True)
         win_embed.add_field(name="💵 자산", value=f"{format(moneyA[idA.index(ID)], ',d')}원", inline=True)
-        win_embed.add_field(name="📈 배율", value="300x", inline=True)
-        win_embed.set_footer(text="🎊 전설이 되셨습니다!")
         
     else:
         # 꽝
         lose_embed = discord.Embed(title="💔 꽝!", 
-                                 description=f"*아쉽지만 3개가 일치하지 않았습니다.\nㅤ", 
+                                 description=f"아쉽지만 3개가 일치하지 않았습니다.\nㅤ", 
                                  color=0xFF0000)
-        lose_embed.add_field(name="🎰 결과", value=f"[{animal[0]}] [{animal[1]}] [{animal[2]}]", inline=True)
         lose_embed.add_field(name="💰 손실", value=f"-{format(betting, ',d')}원", inline=True)
         lose_embed.add_field(name="💵 자산", value=f"{format(moneyA[idA.index(ID)], ',d')}원", inline=True)
-        lose_embed.set_footer(text="💪 다음에는 꼭 당첨되세요!")
         await message.channel.send(embed=lose_embed)
         return
     
@@ -183,13 +164,13 @@ async def handle_jackpot(message, idA, moneyA):
 # 복권 게임
 async def handle_lotto(message, idA, moneyA):
     ID = str(message.author.id)
-    betting = 500000
+    betting = 5000
     lotto = []
     input_num = []
     result = 0
     money = 0
     if not ID in idA or moneyA[idA.index(ID)] - betting < 0:
-        embed = discord.Embed(title=message.author.name, description="돈이 부족합니다!", color=0xFF0000)
+        embed = discord.Embed(title=message.author.display_name, description="돈이 부족합니다!", color=0xFF0000)
         await message.channel.send(embed=embed)
         return
     try:
@@ -198,11 +179,11 @@ async def handle_lotto(message, idA, moneyA):
             if 1 <= n <= 20:
                 input_num.append(n)
             else:
-                embed = discord.Embed(title=message.author.name, description="1~20 사이 번호를 입력하세요", color=0xFF0000)
+                embed = discord.Embed(title=message.author.display_name, description="1~20 사이 번호를 입력하세요", color=0xFF0000)
                 await message.channel.send(embed=embed)
                 return
     except:
-        await message.channel.send("명령어 형식: .복권 (숫자 6개)")
+        await message.channel.send(".복권 [숫자1] [숫자2] [숫자3] [숫자4] [숫자5] [숫자6] 형식으로 입력해주세요\n1~20사이 숫자 입력")
         return
     while True:
         num = random.randint(1,20)
@@ -215,31 +196,31 @@ async def handle_lotto(message, idA, moneyA):
             result+=1
     moneyA[idA.index(ID)] -= betting
     if result == 3:
-        money = 1400000
+        money = 15000
         moneyA[idA.index(ID)] += money
     elif result == 4:
-        money = 6000000
+        money = 60000
         moneyA[idA.index(ID)] += money
     elif result == 5:
-        money = 100000000
+        money = 1000000
         moneyA[idA.index(ID)] += money
     elif result == 6:
-        money = 25000000000
+        money = 250000000
         moneyA[idA.index(ID)] += money
     input_num.sort()
     lotto.sort()
     if result <3:
-        embed = discord.Embed(title=message.author.name,description=f"**{result}개 꽝!**ㅤ`[자산 : {format(moneyA[idA.index(ID)], ',d')}원]`\n\n📥입력 : {input_num}\n📤복권 : {lotto}",color=0xFF0000)
+        embed = discord.Embed(title=message.author.display_name,description=f"**{result}개 꽝!**ㅤ`[자산 : {format(moneyA[idA.index(ID)], ',d')}원]`\n\n📥입력 : {input_num}\n📤복권 : {lotto}",color=0xFF0000)
     else:
-        embed = discord.Embed(title=message.author.name,description=f"**{result}개 당첨됐습니다!**ㅤ`[+{format(money,',d')}]`ㅤ`[자산 : {format(moneyA[idA.index(ID)], ',d')}원]`\n\n📥입력 : {input_num}\n📤복권 : {lotto}",color=0x00FF00)
+        embed = discord.Embed(title=message.author.display_name,description=f"**{result}개 당첨됐습니다!**ㅤ`[+{format(money,',d')}]`ㅤ`[자산 : {format(moneyA[idA.index(ID)], ',d')}원]`\n\n📥입력 : {input_num}\n📤복권 : {lotto}",color=0x00FF00)
     await message.channel.send(embed=embed)
 
 # 블랙잭 게임
-async def handle_blackjack(message, idA, moneyA, timeA, levelA, timeB, timeC):
+async def handle_blackjack(client, message, idA, moneyA):
     ID = str(message.author.id)
     try:
         betting = int(message.content.split(" ")[1])
-    except:
+    except (IndexError, ValueError):
         await message.channel.send("명령어 형식: .블랙잭 (베팅금액)")
         return
     dealer, part = [], []
@@ -247,7 +228,7 @@ async def handle_blackjack(message, idA, moneyA, timeA, levelA, timeB, timeC):
     card = [1,2,3,4,5,6,7,8,9,10,'J','Q','K']
     card_emoji = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟','🇯','🇶' ,'🇰']
     if not ID in idA or moneyA[idA.index(ID)] - betting < 0:
-        embed = discord.Embed(title=message.author.name, description="돈이 부족합니다!", color=0xFF0000)
+        embed = discord.Embed(title=message.author.display_name, description="돈이 부족합니다!", color=0xFF0000)
         await message.channel.send(embed=embed)
         return
     for i in range(0,10):
@@ -275,12 +256,12 @@ async def handle_blackjack(message, idA, moneyA, timeA, levelA, timeB, timeC):
     embed=discord.Embed(title="ㅤ               블랙잭", description=f"베팅ㅤ:ㅤ**{format(betting, ',d')}원**\n입력ㅤ:ㅤ**.힛ㅤ/ㅤ.스탠드**\nㅤ", color=0xD8AA2D)
     embed.add_field(name=f"딜러[?]", value=f"❔ {temp}")
     embed.add_field(name="ㅤ   VS   ㅤ", value="ㅤ")
-    embed.add_field(name=f"{message.author.name}[{total}]", value=part_value)
+    embed.add_field(name=f"{message.author.display_name}[{total}]", value=part_value)
     await message.channel.send(embed=embed)
     def check(m):
         return m.author == message.author and m.channel == message.channel and m.content in [".힛", ".스탠드"]
     while True:
-        msg = await message.client.wait_for('message', check=check)
+        msg = await client.wait_for('message', check=check)
         if msg.content == ".힛":
             count+=1
             part_value += f" {part_emoji[count]}"
@@ -292,7 +273,7 @@ async def handle_blackjack(message, idA, moneyA, timeA, levelA, timeB, timeC):
                 embed=discord.Embed(title="ㅤ               블랙잭", description=f"베팅ㅤ:ㅤ**{format(betting, ',d')}원**\nㅤ", color=0xD8AA2D)
                 embed.add_field(name=f"딜러[{dealer_total}]", value=dealer_value)
                 embed.add_field(name="ㅤ   VS   ㅤ", value="ㅤ")
-                embed.add_field(name=f"{message.author.name}[{total}]", value=part_value)
+                embed.add_field(name=f"{message.author.display_name}[{total}]", value=part_value)
                 await message.channel.send(embed=embed)
                 moneyA[idA.index(ID)] -= betting
                 embed=discord.Embed(title="【버스트】ㅤ딜러 승리", description=f"`[-{format(betting, ',d')}]`ㅤ`[자산 : {format(moneyA[idA.index(ID)], ',d')}원]`", color=0xFF0000)
@@ -302,13 +283,13 @@ async def handle_blackjack(message, idA, moneyA, timeA, levelA, timeB, timeC):
                 embed=discord.Embed(title="ㅤ               블랙잭", description=f"베팅ㅤ:ㅤ**{format(betting, ',d')}원**\n입력ㅤ:ㅤ**.힛ㅤ/ㅤ.스탠드**\nㅤ", color=0xD8AA2D)
                 embed.add_field(name=f"딜러[?]", value=f"? {temp}")
                 embed.add_field(name="ㅤ   VS   ㅤ", value="ㅤ")
-                embed.add_field(name=f"{message.author.name}[{total}]", value=part_value)
+                embed.add_field(name=f"{message.author.display_name}[{total}]", value=part_value)
                 await message.channel.send(embed=embed)
         if msg.content == ".스탠드":
             embed=discord.Embed(title="ㅤ               블랙잭", description=f"베팅ㅤ:ㅤ**{format(betting, ',d')}원**\nㅤ", color=0xD8AA2D)
             embed.add_field(name=f"딜러[{dealer_total}]", value=dealer_value)
             embed.add_field(name="ㅤ   VS   ㅤ", value="ㅤ")
-            embed.add_field(name=f"{message.author.name}[{total}]", value=part_value)
+            embed.add_field(name=f"{message.author.display_name}[{total}]", value=part_value)
             await message.channel.send(embed=embed)
             await asyncio.sleep(1)
             while(dealer_total<17):
@@ -322,22 +303,22 @@ async def handle_blackjack(message, idA, moneyA, timeA, levelA, timeB, timeC):
                     embed=discord.Embed(title="ㅤ               블랙잭", description=f"베팅ㅤ:ㅤ**{format(betting, ',d')}원**\nㅤ", color=0xD8AA2D)
                     embed.add_field(name=f"딜러[{dealer_total}]", value=dealer_value)
                     embed.add_field(name="ㅤ   VS   ㅤ", value="ㅤ")
-                    embed.add_field(name=f"{message.author.name}[{total}]", value=part_value)
+                    embed.add_field(name=f"{message.author.display_name}[{total}]", value=part_value)
                     await message.channel.send(embed=embed)
                     moneyA[idA.index(ID)] += betting
-                    embed=discord.Embed(title=f"【버스트】ㅤ{message.author.name} 승리", description=f"`[+{format(betting, ',d')}]`ㅤ`[자산 : {format(moneyA[idA.index(ID)], ',d')}원]`", color=0x00FF00)
+                    embed=discord.Embed(title=f"【버스트】ㅤ{message.author.display_name} 승리", description=f"`[+{format(betting, ',d')}]`ㅤ`[자산 : {format(moneyA[idA.index(ID)], ',d')}원]`", color=0x00FF00)
                     await message.channel.send(embed=embed)
                     return
                 else:
                     embed=discord.Embed(title="ㅤ               블랙잭", description=f"베팅ㅤ:ㅤ**{format(betting, ',d')}원**\nㅤ", color=0xD8AA2D)
                     embed.add_field(name=f"딜러[{dealer_total}]", value=dealer_value)
                     embed.add_field(name="ㅤ   VS   ㅤ", value="ㅤ")
-                    embed.add_field(name=f"{message.author.name}[{total}]", value=part_value)
+                    embed.add_field(name=f"{message.author.display_name}[{total}]", value=part_value)
                     await message.channel.send(embed=embed)
                 await asyncio.sleep(1)
             if(total >dealer_total) :
                 moneyA[idA.index(ID)] += betting
-                embed=discord.Embed(title=f"{message.author.name} 승리", description=f"`[+{format(betting, ',d')}]`ㅤ`[자산 : {format(moneyA[idA.index(ID)], ',d')}원]`", color=0x00FF00)
+                embed=discord.Embed(title=f"{message.author.display_name} 승리", description=f"`[+{format(betting, ',d')}]`ㅤ`[자산 : {format(moneyA[idA.index(ID)], ',d')}원]`", color=0x00FF00)
                 await message.channel.send(embed=embed)
                 return
             elif(total <dealer_total) :

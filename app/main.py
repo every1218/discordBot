@@ -1,9 +1,9 @@
 import discord
 import datetime
-import os
 import threading
 from flask import Flask
 from dotenv import load_dotenv
+import os
 
 from user_data import load_user_data, save_user_data
 from commands import handle_simple_commands
@@ -11,6 +11,7 @@ from economy import handle_money, handle_hourly, handle_minutely, handle_attenda
 from games import handle_even_odd, handle_jackpot, handle_lotto,handle_blackjack
 #from games import handle_bet_prediction, handle_call_my_name, handle_sutda
 from champion import handle_champion_command
+from chat import llm_chat
 
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
@@ -41,12 +42,21 @@ async def on_ready():
     print("봇 준비 완료!")
     print(client.user)
     print("==========")
-    await client.change_presence(status=discord.Status.online, activity=discord.Game("생선먹방"))
+    await client.change_presence(status=discord.Status.online, activity=discord.Game(".도움말"))
 
 @client.event
 async def on_message(message):
     if message.author.bot:
         return
+
+    # 봇이 멘션되었을 때 LLM 기능 호출
+    if client.user in message.mentions:
+        query = message.content.replace(f'<@{client.user.id}>', '').strip()
+        async with message.channel.typing():
+            answer = await llm_chat(query)
+            await message.reply(answer, mention_author=False)
+        return
+        
     ID = str(message.author.id)
     
     # 단순 명령어 처리
@@ -95,7 +105,7 @@ async def on_message(message):
         save_user_data(usernames, idA, moneyA, levelA, timeA, timeB, timeC)
         return
     if message.content.startswith(".블랙잭"):
-        await handle_blackjack(message, idA, moneyA, timeA, levelA, timeB, timeC)
+        await handle_blackjack(client, message, idA, moneyA)
         save_user_data(usernames, idA, moneyA, levelA, timeA, timeB, timeC)
         return
     # if message.content.startswith(".승부예측"):

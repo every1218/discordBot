@@ -9,6 +9,7 @@ python = ">=3.10.5"
 discord-py = "*"
 flask = "*"
 python-dotenv = "*"
+openai = "^2.14.0"
 
 [build-system]
 requires = ["poetry-core"]
